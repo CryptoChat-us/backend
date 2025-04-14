@@ -13,6 +13,10 @@ public class CoinMarketCapFeignConfig {
 
     @Bean
     public RequestInterceptor cmcRequestInterceptor() {
+        if (apiKey == null || apiKey.trim().isEmpty()) {
+            throw new IllegalStateException("CoinMarketCap API key is not configured. Please set 'crypto-chat.api-key.coin-market-cap' in your configuration.");
+        }
+
         return requestTemplate -> {
             requestTemplate.header("X-CMC_PRO_API_KEY", apiKey);
             requestTemplate.header("Accept", "application/json");

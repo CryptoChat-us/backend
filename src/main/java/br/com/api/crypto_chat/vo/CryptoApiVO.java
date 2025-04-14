@@ -1,7 +1,5 @@
 package br.com.api.crypto_chat.vo;
 
-import java.util.List;
-
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

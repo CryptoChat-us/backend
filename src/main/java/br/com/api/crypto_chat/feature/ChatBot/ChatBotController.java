@@ -1,7 +1,5 @@
 package br.com.api.crypto_chat.feature.ChatBot;
 
-import java.time.LocalDateTime;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;

@@ -11,7 +11,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class OpenAIConfig {
     
-    @Value("${OPENAI_API_KEY:${crypto-chat.url.open.api-key:}}")
+    @Value("${crypto-chat.url.open.api-key}")
     private String apiKey;
 
     @Bean

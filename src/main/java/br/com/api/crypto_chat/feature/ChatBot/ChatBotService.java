@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import br.com.api.crypto_chat.data.entity.Chat;
 import br.com.api.crypto_chat.data.entity.LogMessage;
-import br.com.api.crypto_chat.data.entity.Prompts;
 import br.com.api.crypto_chat.data.repository.ChatRepository;
 import br.com.api.crypto_chat.data.repository.LogMessageRepository;
 import br.com.api.crypto_chat.data.repository.PromptRepository;

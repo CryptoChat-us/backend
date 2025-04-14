@@ -13,10 +13,12 @@ public class CoinGeckoConfig {
 
     @Bean
     public RequestInterceptor coinGeckoInterceptor() {
+        if (apiKey == null || apiKey.trim().isEmpty()) {
+            throw new IllegalStateException("CoinGecko API key is not configured. Please set 'crypto-chat.api-key.crypto-gecko' in your configuration.");
+        }
+
         return requestTemplate -> {
-            if (apiKey != null && !apiKey.isEmpty()) {
-                requestTemplate.header("x-cg-pro-api-key", apiKey);
-            }
+            requestTemplate.header("x-cg-pro-api-key", apiKey);
             requestTemplate.header("Accept", "application/json");
         };
     }

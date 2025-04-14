@@ -13,6 +13,10 @@ public class CryptoPanicConfig {
 
     @Bean
     public RequestInterceptor cryptoPanicInterceptor() {
+        if (apiKey == null || apiKey.trim().isEmpty()) {
+            throw new IllegalStateException("CryptoPanic API key is not configured. Please set 'crypto-chat.api-key.crypto-panic' in your configuration.");
+        }
+
         return requestTemplate -> {
             requestTemplate.query("auth_token", apiKey);
             requestTemplate.header("Accept", "application/json");

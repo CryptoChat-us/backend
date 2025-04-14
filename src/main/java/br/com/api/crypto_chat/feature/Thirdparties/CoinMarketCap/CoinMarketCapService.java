@@ -18,6 +18,7 @@ public class CoinMarketCapService {
     private final CoinMarketCapClient client;
     private final ObjectMapper objectMapper;
 
+    @SuppressWarnings("unchecked")
     public List<CMCCryptoData> getLatestListings(int start, int limit, String convert) {
         Map<String, String> params = new HashMap<>();
         params.put("start", String.valueOf(start));
@@ -32,6 +33,7 @@ public class CoinMarketCapService {
                   .toList();
     }
 
+    @SuppressWarnings("unchecked")
     public CMCCryptoData getCryptoQuote(String symbol, String convert) {
         Map<String, Object> response = client.getLatestQuotes(symbol.toUpperCase(), convert.toUpperCase());
         Map<String, Object> data = (Map<String, Object>) response.get("data");
@@ -40,32 +42,38 @@ public class CoinMarketCapService {
         return objectMapper.convertValue(cryptoData, CMCCryptoData.class);
     }
 
+    @SuppressWarnings("unchecked")
     public Map<String, Object> getCryptoMetadata(String symbol) {
         Map<String, Object> response = client.getCryptoInfo(symbol.toUpperCase());
         Map<String, Object> data = (Map<String, Object>) response.get("data");
         return (Map<String, Object>) data.get(symbol.toUpperCase());
     }
 
+    @SuppressWarnings("unchecked")
     public Map<String, Object> getGlobalMetrics() {
         Map<String, Object> response = client.getGlobalMetrics();
         return (Map<String, Object>) response.get("data");
     }
 
+    @SuppressWarnings("unchecked")
     public Map<String, Object> convertPrice(String amount, String from, String to) {
         Map<String, Object> response = client.convertPrice(amount, from.toUpperCase(), to.toUpperCase());
         return (Map<String, Object>) response.get("data");
     }
 
+    @SuppressWarnings("unchecked")
     public List<Map<String, Object>> getCryptoMap() {
         Map<String, Object> response = client.getCryptoMap("cmc_rank");
         return (List<Map<String, Object>>) response.get("data");
     }
 
+    @SuppressWarnings("unchecked")
     public List<Map<String, Object>> getFiatMap() {
         Map<String, Object> response = client.getFiatMap();
         return (List<Map<String, Object>>) response.get("data");
     }
 
+    @SuppressWarnings("unchecked")
     public Map<String, Object> getMarketPairs(String symbol) {
         Map<String, Object> response = client.getMarketPairs(symbol.toUpperCase());
         return (Map<String, Object>) response.get("data");

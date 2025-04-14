@@ -19,7 +19,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.api.crypto_chat.data.entity.Prompts;
 import br.com.api.crypto_chat.data.repository.PromptRepository;
-import br.com.api.crypto_chat.data.entity.Prompts;
 
 @Component
 public class InitializeDatabase {

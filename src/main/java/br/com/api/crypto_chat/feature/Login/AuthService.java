@@ -1,7 +1,6 @@
 package br.com.api.crypto_chat.feature.Login;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

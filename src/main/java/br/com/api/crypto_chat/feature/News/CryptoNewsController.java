@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.api.crypto_chat.feature.Thirdparties.CryptoApi.CryptoPanic.CryptoPanicService;
+import br.com.api.crypto_chat.integration.cryptopanic.CryptoPanicService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -27,6 +27,6 @@ public class CryptoNewsController {
     public ResponseEntity<Object> getCryptoNews(
             @Parameter(description = "Comma-separated list of cryptocurrency symbols (e.g., 'BTC,ETH')", required = true)
             @RequestParam String coins) {
-        return ResponseEntity.ok(cryptoPanicService.getCryptoNews(coins));
+        return ResponseEntity.ok(cryptoPanicService.getNews("rising", coins, true, true, true));
     }
 }

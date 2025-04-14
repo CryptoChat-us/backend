@@ -39,6 +39,7 @@ public class CoinGeckoErrorDecoder implements ErrorDecoder {
 
     private String getErrorMessage(Response response) {
         try (InputStream bodyIs = response.body().asInputStream()) {
+            @SuppressWarnings("unchecked")
             Map<String, Object> error = objectMapper.readValue(bodyIs, Map.class);
             return error.getOrDefault("error", "Unknown error").toString();
         } catch (IOException e) {
