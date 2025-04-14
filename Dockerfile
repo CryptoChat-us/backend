@@ -1,19 +1,29 @@
-# Imagem base com Java 21
+# Build stage
+FROM eclipse-temurin:21-jdk-alpine as build
+WORKDIR /workspace/app
+
+# Copiar o projeto
+COPY mvnw .
+COPY .mvn .mvn
+COPY pom.xml .
+COPY src src
+
+# Dar permissão de execução ao mvnw
+RUN chmod +x ./mvnw
+
+# Build do projeto
+RUN ./mvnw clean package -DskipTests
+
+# Runtime stage
 FROM eclipse-temurin:21-jdk-alpine
-
-# Argumentos para configuração
-ARG JAR_FILE=target/*.jar
-ARG PROFILE=prod
-
-# Variáveis de ambiente
-ENV SPRING_PROFILES_ACTIVE=${PROFILE}
-ENV SERVER_PORT=8080
-
-# Diretório de trabalho
 WORKDIR /app
 
-# Copiar o arquivo JAR
-COPY ${JAR_FILE} app.jar
+# Copiar o JAR do estágio de build
+COPY --from=build /workspace/app/target/*.jar app.jar
+
+# Variáveis de ambiente
+ENV SPRING_PROFILES_ACTIVE=prod
+ENV SERVER_PORT=8080
 
 # Expor a porta
 EXPOSE 8080
