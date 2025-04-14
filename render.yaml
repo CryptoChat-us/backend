@@ -8,8 +8,6 @@ services:
     envVars:
       - key: SPRING_PROFILES_ACTIVE
         value: prod
-      - key: PORT
-        value: 8080
       - key: POSTGRES_URL
         sync: false
       - key: POSTGRES_USER
@@ -29,4 +27,4 @@ services:
       - key: CRYPTOPANIC_API_KEY
         sync: false
     buildCommand: ./mvnw clean package -DskipTests
-    startCommand: java -Dserver.port=$PORT -jar target/*.jar
+    startCommand: java -jar target/*.jar
