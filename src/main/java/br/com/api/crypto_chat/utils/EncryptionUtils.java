@@ -37,16 +37,16 @@ public class EncryptionUtils {
     private SecretKey deriveMasterKey(String secret) {
         try {
             byte[] salt = new byte[SALT_LENGTH];
-            // Use a fixed salt for master key derivation - this is OK since we use unique IVs for each encryption
+            // Use a fixed salt for master key derivation - this is OK since we use unique
+            // IVs for each encryption
             Arrays.fill(salt, (byte) 0x42);
 
             SecretKeyFactory factory = SecretKeyFactory.getInstance(KEY_DERIVATION_ALGORITHM);
             PBEKeySpec spec = new PBEKeySpec(
-                secret.toCharArray(),
-                salt,
-                ITERATION_COUNT,
-                KEY_LENGTH
-            );
+                    secret.toCharArray(),
+                    salt,
+                    ITERATION_COUNT,
+                    KEY_LENGTH);
 
             byte[] keyBytes = factory.generateSecret(spec).getEncoded();
             return new SecretKeySpec(keyBytes, "AES");

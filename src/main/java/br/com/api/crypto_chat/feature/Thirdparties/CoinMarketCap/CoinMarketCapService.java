@@ -1,22 +1,25 @@
 package br.com.api.crypto_chat.feature.Thirdparties.CoinMarketCap;
 
-import br.com.api.crypto_chat.feature.Thirdparties.CoinMarketCap.response.CMCCryptoData;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import br.com.api.crypto_chat.feature.Thirdparties.CoinMarketCap.response.CMCCryptoData;
+import lombok.extern.slf4j.Slf4j;
+
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class CoinMarketCapService {
 
-    private final CoinMarketCapClient client;
-    private final ObjectMapper objectMapper;
+    @Autowired
+    CoinMarketCapClient client;
+    @Autowired
+    ObjectMapper objectMapper;
 
     @SuppressWarnings("unchecked")
     public List<CMCCryptoData> getLatestListings(int start, int limit, String convert) {
@@ -24,13 +27,13 @@ public class CoinMarketCapService {
         params.put("start", String.valueOf(start));
         params.put("limit", String.valueOf(limit));
         params.put("convert", convert.toUpperCase());
-        
+
         Map<String, Object> response = client.getLatestListings(params);
         List<Map<String, Object>> data = (List<Map<String, Object>>) response.get("data");
-        
+
         return data.stream()
-                  .map(item -> objectMapper.convertValue(item, CMCCryptoData.class))
-                  .toList();
+                .map(item -> objectMapper.convertValue(item, CMCCryptoData.class))
+                .toList();
     }
 
     @SuppressWarnings("unchecked")
@@ -38,7 +41,7 @@ public class CoinMarketCapService {
         Map<String, Object> response = client.getLatestQuotes(symbol.toUpperCase(), convert.toUpperCase());
         Map<String, Object> data = (Map<String, Object>) response.get("data");
         Map<String, Object> cryptoData = (Map<String, Object>) data.get(symbol.toUpperCase());
-        
+
         return objectMapper.convertValue(cryptoData, CMCCryptoData.class);
     }
 

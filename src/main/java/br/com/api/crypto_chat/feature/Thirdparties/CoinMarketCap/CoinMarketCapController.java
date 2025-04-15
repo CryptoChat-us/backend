@@ -1,22 +1,27 @@
 package br.com.api.crypto_chat.feature.Thirdparties.CoinMarketCap;
 
-import br.com.api.crypto_chat.feature.Thirdparties.CoinMarketCap.response.CMCCryptoData;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import br.com.api.crypto_chat.feature.Thirdparties.CoinMarketCap.response.CMCCryptoData;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
 @RequestMapping("/api/v1/market/cmc")
-@RequiredArgsConstructor
 @Tag(name = "CoinMarketCap", description = "Endpoints for cryptocurrency data from CoinMarketCap")
 public class CoinMarketCapController {
 
-    private final CoinMarketCapService service;
+    @Autowired
+    CoinMarketCapService service;
 
     @GetMapping("/listings")
     @Operation(summary = "Get latest cryptocurrency listings")

@@ -1,11 +1,15 @@
 package br.com.api.crypto_chat.feature.ChatBot;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.annotation.SendToUser;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import br.com.api.crypto_chat.dto.ChatMessageRequest;
 import br.com.api.crypto_chat.dto.ChatMessageResponse;
@@ -13,17 +17,16 @@ import br.com.api.crypto_chat.dto.ErrorResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/api/chat")
-@RequiredArgsConstructor
 @Slf4j
 @Tag(name = "Chat Bot", description = "APIs for interacting with the chat bot")
 public class ChatBotController {
-        
-    private final ChatBotService chatBotService;
+
+    @Autowired
+    ChatBotService chatBotService;
 
     @PostMapping("/message")
     @Operation(summary = "Send a message to the chat bot via REST")
@@ -35,7 +38,7 @@ public class ChatBotController {
         } catch (Exception e) {
             log.error("Error processing message", e);
             return ResponseEntity.internalServerError()
-                .body(new ErrorResponse("Error processing message: " + e.getMessage()));
+                    .body(new ErrorResponse("Error processing message: " + e.getMessage()));
         }
     }
 

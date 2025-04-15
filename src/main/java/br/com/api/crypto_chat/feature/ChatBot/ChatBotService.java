@@ -6,6 +6,7 @@ import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import br.com.api.crypto_chat.data.entity.Chat;
@@ -18,27 +19,29 @@ import br.com.api.crypto_chat.dto.ChatMessageResponse;
 import br.com.api.crypto_chat.feature.Thirdparties.OpenAI.OpenApiService;
 import br.com.api.crypto_chat.vo.ChatRequestVO;
 import br.com.api.crypto_chat.vo.MessageVO;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
-@RequiredArgsConstructor
 @Slf4j
 public class ChatBotService {
 
-    private final LogMessageRepository logMessageRepository;
-    private final OpenApiService openApiService;
-    private final ChatRepository chatRepository;
-    private final PromptRepository promptRepository;
-    
+    @Autowired
+    LogMessageRepository logMessageRepository;
+    @Autowired
+    OpenApiService openApiService;
+    @Autowired
+    ChatRepository chatRepository;
+    @Autowired
+    PromptRepository promptRepository;
+
     private static final String GPT_MODEL = "gpt-4-turbo-preview";
 
     public ChatMessageResponse processMessage(ChatMessageRequest request) {
         log.debug("Processing message from user: {}", request.getLogin());
-        
+
         String response = processChat(request);
         recordLogMessage(request.getLogin(), request.getMessage(), response);
-        
+
         return ChatMessageResponse.builder()
                 .login(request.getLogin())
                 .message(request.getMessage())
@@ -71,10 +74,10 @@ public class ChatBotService {
 
         // Prepare and send request
         ChatRequestVO chatRequestVO = ChatRequestVO.builder()
-            .model(GPT_MODEL)
-            .messages(messages)
-            .temperature(0.7)
-            .build();
+                .model(GPT_MODEL)
+                .messages(messages)
+                .temperature(0.7)
+                .build();
 
         return openApiService.generateChatCompletion(chatRequestVO)
                 .get("choices").get(0).get("message").get("content").asText()
@@ -88,20 +91,20 @@ public class ChatBotService {
         log.setMessage(message);
         log.setMessageResponse(response);
         log.setDateMessage(LocalDateTime.now());
-        
+
         logMessageRepository.save(log);
     }
 
     private List<MessageVO> loadPrimaryPrompts(String login) {
         List<MessageVO> messages = new ArrayList<>();
-        
+
         promptRepository.findAll().forEach(prompt -> {
             String decodedMessage = decodeBase64(prompt.getMessage());
             String decodedResponse = decodeBase64(prompt.getMessageResponse());
-            
+
             messages.add(createMessage("user", decodedMessage));
             messages.add(createMessage("assistant", decodedResponse));
-            
+
             // Record in log history
             LogMessage log = new LogMessage();
             log.setLogin(login);
@@ -110,7 +113,7 @@ public class ChatBotService {
             log.setDateMessage(LocalDateTime.now());
             logMessageRepository.save(log);
         });
-        
+
         return messages;
     }
 
@@ -121,14 +124,14 @@ public class ChatBotService {
         chatRepository.save(chat);
         log.info("Initialized chat for user: {}", login);
     }
-    
+
     private MessageVO createMessage(String role, String content) {
         return MessageVO.builder()
-            .role(role)
-            .content(content)
-            .build();
+                .role(role)
+                .content(content)
+                .build();
     }
-    
+
     private String decodeBase64(String encoded) {
         return new String(Base64.getDecoder().decode(encoded.getBytes()));
     }

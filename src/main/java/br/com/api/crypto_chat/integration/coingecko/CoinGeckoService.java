@@ -1,18 +1,22 @@
 package br.com.api.crypto_chat.integration.coingecko;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import br.com.api.crypto_chat.integration.coingecko.response.CoinMarketData;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-
-import java.util.*;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class CoinGeckoService {
 
-    private final CoinGeckoClient coinGeckoClient;
+    @Autowired
+    CoinGeckoClient coinGeckoClient;
 
     public boolean isServiceHealthy() {
         try {

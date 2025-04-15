@@ -1,5 +1,6 @@
 package br.com.api.crypto_chat.feature.Login;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -18,20 +19,18 @@ import br.com.api.crypto_chat.feature.Translation.TranslationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
-
 
 @RestController
 @RequestMapping("/auth")
-@RequiredArgsConstructor
 @Slf4j
 @Tag(name = "Authentication", description = "APIs for user authentication and registration")
 public class AuthController {
-    private final AuthService authService;
-    private final TranslationService translationService;
-    
+    @Autowired
+    AuthService authService;
+    @Autowired
+    TranslationService translationService;
+
     private static final String MESSAGE_ACCOUNT_CREATED = "Your account has been created successfully";
     private static final String MESSAGE_LOGIN_SUCCESS = "You have been logged in successfully";
     private static final String MESSAGE_USER_EXISTS = "User already exists with this login or email";
@@ -46,14 +45,14 @@ public class AuthController {
                 .message(available ? "Login is available" : "Login is already taken")
                 .build());
     }
-    
+
     @Operation(summary = "Authenticate a user")
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request) {
         try {
             String token = authService.authenticateUser(request);
             String message = getTranslatedMessage(MESSAGE_LOGIN_SUCCESS, request.getLanguage());
-            
+
             return ResponseEntity.ok(AuthResponse.builder()
                     .success(true)
                     .message(message)
@@ -71,7 +70,7 @@ public class AuthController {
         try {
             String token = authService.registerUser(request);
             String message = getTranslatedMessage(MESSAGE_ACCOUNT_CREATED, request.getLanguage());
-            
+
             return ResponseEntity.ok(AuthResponse.builder()
                     .success(true)
                     .message(message)
@@ -90,7 +89,7 @@ public class AuthController {
         authService.deleteUser(login);
         return ResponseEntity.ok(AuthResponse.success("User deleted successfully"));
     }
-    
+
     private String getTranslatedMessage(String message, String languageCode) {
         Language language = Language.fromCode(languageCode);
         if (language == Language.EN) {
@@ -103,6 +102,5 @@ public class AuthController {
             return message; // Fallback to English
         }
     }
-
 
 }

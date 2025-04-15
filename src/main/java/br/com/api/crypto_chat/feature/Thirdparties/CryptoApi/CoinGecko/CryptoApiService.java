@@ -1,24 +1,25 @@
 package br.com.api.crypto_chat.feature.Thirdparties.CryptoApi.CoinGecko;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import br.com.api.crypto_chat.exception.CryptoApiException;
 import feign.FeignException;
 import io.github.resilience4j.retry.annotation.Retry;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import br.com.api.crypto_chat.exception.CryptoApiException;
 
 @Service
 @Slf4j
-@RequiredArgsConstructor
 public class CryptoApiService {
 
-    private final CryptoApiClient cryptoApiClient;
-    private final ObjectMapper objectMapper;
+    @Autowired
+    CryptoApiClient cryptoApiClient;
+    @Autowired
+    ObjectMapper objectMapper;
 
     @Retry(name = "cryptoGeckoRetry")
     public JsonNode getCoinPrice(String coinName) {
