@@ -21,17 +21,15 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-
-
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
 @Slf4j
 @Tag(name = "Authentication", description = "APIs for user authentication and registration")
 public class AuthController {
     private final AuthService authService;
     private final TranslationService translationService;
-    
+
     private static final String MESSAGE_ACCOUNT_CREATED = "Your account has been created successfully";
     private static final String MESSAGE_LOGIN_SUCCESS = "You have been logged in successfully";
     private static final String MESSAGE_USER_EXISTS = "User already exists with this login or email";
@@ -39,28 +37,28 @@ public class AuthController {
 
     @Operation(summary = "Check if a login is available")
     @GetMapping("/verify-login")
-    public ResponseEntity<AuthResponse> verifyLogin(@RequestParam String login) {
-        boolean available = authService.isLoginAvailable(login);
+    public ResponseEntity<AuthResponse> verifyLogin(@RequestParam String email) {
+        boolean available = authService.isLoginAvailable(email);
         return ResponseEntity.ok(AuthResponse.builder()
                 .success(available)
                 .message(available ? "Login is available" : "Login is already taken")
                 .build());
     }
-    
+
     @Operation(summary = "Authenticate a user")
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request) {
         try {
             String token = authService.authenticateUser(request);
             String message = getTranslatedMessage(MESSAGE_LOGIN_SUCCESS, request.getLanguage());
-            
+
             return ResponseEntity.ok(AuthResponse.builder()
                     .success(true)
                     .message(message)
                     .token(token)
                     .build());
         } catch (Exception e) {
-            log.error("Login failed for user: {}", request.getLogin(), e);
+            log.error("Login failed for user: {}", request.getEmail(), e);
             return ResponseEntity.badRequest().body(AuthResponse.error(MESSAGE_LOGIN_FAILED));
         }
     }
@@ -71,26 +69,26 @@ public class AuthController {
         try {
             String token = authService.registerUser(request);
             String message = getTranslatedMessage(MESSAGE_ACCOUNT_CREATED, request.getLanguage());
-            
+
             return ResponseEntity.ok(AuthResponse.builder()
                     .success(true)
                     .message(message)
                     .token(token)
                     .build());
         } catch (Exception e) {
-            log.error("Registration failed for user: {}", request.getLogin(), e);
+            log.error("Registration failed for user: {}", request.getEmail(), e);
             return ResponseEntity.badRequest().body(AuthResponse.error(MESSAGE_USER_EXISTS));
         }
     }
 
     @Operation(summary = "Delete a user account")
     @DeleteMapping("/user")
-    @PreAuthorize("hasRole('ADMIN') or #login == authentication.name")
-    public ResponseEntity<AuthResponse> deleteUser(@RequestParam String login) {
-        authService.deleteUser(login);
+    @PreAuthorize("hasRole('ADMIN') or #email == authentication.name")
+    public ResponseEntity<AuthResponse> deleteUser(@RequestParam String email) {
+        authService.deleteUser(email);
         return ResponseEntity.ok(AuthResponse.success("User deleted successfully"));
     }
-    
+
     private String getTranslatedMessage(String message, String languageCode) {
         Language language = Language.fromCode(languageCode);
         if (language == Language.EN) {
@@ -103,6 +101,5 @@ public class AuthController {
             return message; // Fallback to English
         }
     }
-
 
 }

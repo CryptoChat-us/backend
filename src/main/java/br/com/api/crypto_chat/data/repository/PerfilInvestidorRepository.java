@@ -10,11 +10,12 @@ import br.com.api.crypto_chat.data.entity.PerfilInvestidor;
 
 @Repository
 public interface PerfilInvestidorRepository extends JpaRepository<PerfilInvestidor, UUID> {
-    
+
     /**
      * Finds the most recent investor profile for a given user
-     * @param login The user's login
+     * 
+     * @param email The user's email
      * @return Optional containing the most recent profile if exists
      */
-    Optional<PerfilInvestidor> findTopByLoginOrderByDataConclusaoDesc(String login);
+    Optional<PerfilInvestidor> findTopByEmailOrderByDataConclusaoDesc(String login);
 }

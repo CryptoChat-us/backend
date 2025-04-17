@@ -19,13 +19,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(
-    name = "TB_LOG_MESSAGE",
-    indexes = {
-        @Index(name = "idx_log_message_login", columnList = "login"),
+@Table(name = "TB_LOG_MESSAGE", indexes = {
+        @Index(name = "idx_log_message_email", columnList = "email"),
         @Index(name = "idx_log_message_date", columnList = "dateMessage")
-    }
-)
+})
 @Getter
 @Setter
 @Builder
@@ -40,7 +37,7 @@ public class LogMessage {
     private UUID idLogMessage;
 
     @Column(nullable = false)
-    private String login;
+    private String email;
 
     @Lob
     @Column(nullable = false)

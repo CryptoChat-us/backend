@@ -30,6 +30,6 @@ public class Chat {
     private Boolean flgHasPrompt;
 
     @Column(unique = true, nullable = false)
-    private String login;
+    private String email;
 
 }

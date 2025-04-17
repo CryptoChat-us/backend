@@ -10,11 +10,11 @@ import lombok.Data;
 @Data
 @Builder
 public class ChatMessageResponse {
-    private String login;
+    private String email;
     private String message;
     private String response;
     private String topic;
-    
+
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime timestamp;
 }

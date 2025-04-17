@@ -22,20 +22,20 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Tag(name = "Chat Bot", description = "APIs for interacting with the chat bot")
 public class ChatBotController {
-        
+
     private final ChatBotService chatBotService;
 
     @PostMapping("/message")
     @Operation(summary = "Send a message to the chat bot via REST")
     public ResponseEntity<?> sendMessage(@Valid @RequestBody ChatMessageRequest request) {
         try {
-            log.info("Received REST message from {}: {}", request.getLogin(), request.getMessage());
+            log.info("Received REST message from {}: {}", request.getEmail(), request.getMessage());
             ChatMessageResponse response = chatBotService.processMessage(request);
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             log.error("Error processing message", e);
             return ResponseEntity.internalServerError()
-                .body(new ErrorResponse("Error processing message: " + e.getMessage()));
+                    .body(new ErrorResponse("Error processing message: " + e.getMessage()));
         }
     }
 
@@ -44,7 +44,7 @@ public class ChatBotController {
     @SendTo("/topic/public")
     public ChatMessageResponse sendPublicMessage(
             @Valid @Payload ChatMessageRequest request) {
-        log.info("Received public message from {}: {}", request.getLogin(), request.getMessage());
+        log.info("Received public message from {}: {}", request.getEmail(), request.getMessage());
         return chatBotService.processMessage(request);
     }
 
@@ -53,7 +53,7 @@ public class ChatBotController {
     @SendToUser("/topic/private")
     public ChatMessageResponse sendPrivateMessage(
             @Valid @Payload ChatMessageRequest request) {
-        log.info("Received private message from {}: {}", request.getLogin(), request.getMessage());
+        log.info("Received private message from {}: {}", request.getEmail(), request.getMessage());
         ChatMessageResponse response = chatBotService.processMessage(request);
         response.setTopic("private");
         return response;

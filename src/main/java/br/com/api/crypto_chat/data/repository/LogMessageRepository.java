@@ -13,22 +13,23 @@ import br.com.api.crypto_chat.data.entity.LogMessage;
 public interface LogMessageRepository extends JpaRepository<LogMessage, UUID> {
 
     /**
-     * Find all messages by user login ordered by date ascending
-     * @param login The user's login
+     * Find all messages by user email ordered by date ascending
+     * 
+     * @param email The user's email
      * @return List of messages
      */
-    List<LogMessage> findAllByLoginOrderByDateMessageAsc(String login);
+    List<LogMessage> findAllByEmailOrderByDateMessageAsc(String email);
 
     /**
-     * Find all messages by user login within a date range
-     * @param login The user's login
+     * Find all messages by user email within a date range
+     * 
+     * @param email The user's email
      * @param start Start date (inclusive)
-     * @param end End date (inclusive)
+     * @param end   End date (inclusive)
      * @return List of messages ordered by date
      */
-    List<LogMessage> findAllByLoginAndDateMessageBetweenOrderByDateMessageAsc(
-        String login, 
-        LocalDateTime start, 
-        LocalDateTime end
-    );
+    List<LogMessage> findAllByEmailAndDateMessageBetweenOrderByDateMessageAsc(
+            String email,
+            LocalDateTime start,
+            LocalDateTime end);
 }

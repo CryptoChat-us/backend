@@ -30,17 +30,17 @@ public class ChatBotService {
     private final OpenApiService openApiService;
     private final ChatRepository chatRepository;
     private final PromptRepository promptRepository;
-    
+
     private static final String GPT_MODEL = "gpt-4-turbo-preview";
 
     public ChatMessageResponse processMessage(ChatMessageRequest request) {
-        log.debug("Processing message from user: {}", request.getLogin());
-        
+        log.debug("Processing message from user: {}", request.getEmail());
+
         String response = processChat(request);
-        recordLogMessage(request.getLogin(), request.getMessage(), response);
-        
+        recordLogMessage(request.getEmail(), request.getMessage(), response);
+
         return ChatMessageResponse.builder()
-                .login(request.getLogin())
+                .email(request.getEmail())
                 .message(request.getMessage())
                 .response(response)
                 .topic(request.getTopic())
@@ -53,14 +53,14 @@ public class ChatBotService {
         List<MessageVO> messages = new ArrayList<>();
 
         // Get chat history or initialize with prompts
-        Optional<Chat> chat = chatRepository.findByLogin(request.getLogin());
+        Optional<Chat> chat = chatRepository.findByEmail(request.getEmail());
         if (chat.isEmpty() || !chat.get().getFlgHasPrompt()) {
-            messages.addAll(loadPrimaryPrompts(request.getLogin()));
-            initializeChat(request.getLogin());
+            messages.addAll(loadPrimaryPrompts(request.getEmail()));
+            initializeChat(request.getEmail());
         }
 
         // Add chat history
-        logMessageRepository.findAllByLoginOrderByDateMessageAsc(request.getLogin())
+        logMessageRepository.findAllByEmailOrderByDateMessageAsc(request.getEmail())
                 .forEach(msg -> {
                     messages.add(createMessage("user", msg.getMessage()));
                     messages.add(createMessage("assistant", msg.getMessageResponse()));
@@ -71,10 +71,10 @@ public class ChatBotService {
 
         // Prepare and send request
         ChatRequestVO chatRequestVO = ChatRequestVO.builder()
-            .model(GPT_MODEL)
-            .messages(messages)
-            .temperature(0.7)
-            .build();
+                .model(GPT_MODEL)
+                .messages(messages)
+                .temperature(0.7)
+                .build();
 
         return openApiService.generateChatCompletion(chatRequestVO)
                 .get("choices").get(0).get("message").get("content").asText()
@@ -82,53 +82,53 @@ public class ChatBotService {
                 .replace("html", "");
     }
 
-    private void recordLogMessage(String login, String message, String response) {
+    private void recordLogMessage(String email, String message, String response) {
         LogMessage log = new LogMessage();
-        log.setLogin(login);
+        log.setEmail(email);
         log.setMessage(message);
         log.setMessageResponse(response);
         log.setDateMessage(LocalDateTime.now());
-        
+
         logMessageRepository.save(log);
     }
 
-    private List<MessageVO> loadPrimaryPrompts(String login) {
+    private List<MessageVO> loadPrimaryPrompts(String email) {
         List<MessageVO> messages = new ArrayList<>();
-        
+
         promptRepository.findAll().forEach(prompt -> {
             String decodedMessage = decodeBase64(prompt.getMessage());
             String decodedResponse = decodeBase64(prompt.getMessageResponse());
-            
+
             messages.add(createMessage("user", decodedMessage));
             messages.add(createMessage("assistant", decodedResponse));
-            
+
             // Record in log history
             LogMessage log = new LogMessage();
-            log.setLogin(login);
+            log.setEmail(email);
             log.setMessage(decodedMessage);
             log.setMessageResponse(decodedResponse);
             log.setDateMessage(LocalDateTime.now());
             logMessageRepository.save(log);
         });
-        
+
         return messages;
     }
 
-    private void initializeChat(String login) {
+    private void initializeChat(String email) {
         Chat chat = new Chat();
         chat.setFlgHasPrompt(true);
-        chat.setLogin(login);
+        chat.setEmail(email);
         chatRepository.save(chat);
-        log.info("Initialized chat for user: {}", login);
+        log.info("Initialized chat for user: {}", email);
     }
-    
+
     private MessageVO createMessage(String role, String content) {
         return MessageVO.builder()
-            .role(role)
-            .content(content)
-            .build();
+                .role(role)
+                .content(content)
+                .build();
     }
-    
+
     private String decodeBase64(String encoded) {
         return new String(Base64.getDecoder().decode(encoded.getBytes()));
     }

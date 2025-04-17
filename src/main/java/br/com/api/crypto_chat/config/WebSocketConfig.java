@@ -14,11 +14,11 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Value("${crypto-chat.allowed-origin:https://crypto-chat.com}")
     private String allowedOrigin;
-    
+
     private static final String CHAT_ENDPOINT = "/chat/info";
     private static final String TOPIC_PREFIX = "/topic";
     private static final String APP_PREFIX = "/app";
-    
+
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
         config.enableSimpleBroker(TOPIC_PREFIX);
@@ -29,11 +29,11 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         // Configure WebSocket endpoint with session support
         registry.addEndpoint(CHAT_ENDPOINT)
-               .setAllowedOrigins(allowedOrigin)
-               .addInterceptors(new HttpSessionHandshakeInterceptor())
-               .withSockJS()
-               .setStreamBytesLimit(512 * 1024) // 512KB
-               .setHttpMessageCacheSize(1000)
-               .setDisconnectDelay(30 * 1000); // 30 seconds
+                .setAllowedOrigins(allowedOrigin)
+                .addInterceptors(new HttpSessionHandshakeInterceptor())
+                .withSockJS()
+                .setStreamBytesLimit(512 * 1024) // 512KB
+                .setHttpMessageCacheSize(1000)
+                .setDisconnectDelay(30 * 1000); // 30 seconds
     }
 }

@@ -19,13 +19,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(
-    name = "TB_PERFIL_INVESTIDOR",
-    indexes = {
-        @Index(name = "idx_perfil_investidor_login", columnList = "login"),
+@Table(name = "TB_PERFIL_INVESTIDOR", indexes = {
+        @Index(name = "idx_perfil_investidor_email", columnList = "email"),
         @Index(name = "idx_perfil_investidor_data", columnList = "dataConclusao")
-    }
-)
+})
 @Getter
 @Setter
 @Builder
@@ -40,7 +37,7 @@ public class PerfilInvestidor {
     private UUID idPerfil;
 
     @Column(nullable = false)
-    private String login;
+    private String email;
 
     @Column(nullable = false, length = 50)
     private String classificacao;
