@@ -35,7 +35,7 @@ public class SecurityConfig extends WebSecurityConfiguration {
                         "/api/v1/auth/verify-login",
                         "/api/v1/auth/register",
                         "/api/v1/auth/login",
-                        "/chat/info")
+                        "/call-chat")
                 .permitAll() // Permite o acesso sem autenticação para login e registro
                 .anyRequest().authenticated() // Requer autenticação para outras rotas
                 .and()

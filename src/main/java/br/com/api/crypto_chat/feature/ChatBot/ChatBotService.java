@@ -8,6 +8,11 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import br.com.api.crypto_chat.data.entity.Chat;
 import br.com.api.crypto_chat.data.entity.LogMessage;
 import br.com.api.crypto_chat.data.repository.ChatRepository;
@@ -33,19 +38,21 @@ public class ChatBotService {
 
     private static final String GPT_MODEL = "gpt-4-turbo-preview";
 
-    public ChatMessageResponse processMessage(ChatMessageRequest request) {
+    public ObjectNode processMessage(ChatMessageRequest request) throws JsonMappingException, JsonProcessingException {
         log.debug("Processing message from user: {}", request.getEmail());
 
         String response = processChat(request);
         recordLogMessage(request.getEmail(), request.getMessage(), response);
 
-        return ChatMessageResponse.builder()
+        ChatMessageResponse.builder()
                 .email(request.getEmail())
                 .message(request.getMessage())
                 .response(response)
                 .topic(request.getTopic())
                 .timestamp(LocalDateTime.now())
                 .build();
+
+        return generateJsonResponse(response);
     }
 
     private String processChat(ChatMessageRequest request) {
@@ -131,5 +138,13 @@ public class ChatBotService {
 
     private String decodeBase64(String encoded) {
         return new String(Base64.getDecoder().decode(encoded.getBytes()));
+    }
+
+    private ObjectNode generateJsonResponse(String message) {
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectNode jsonResponse = mapper.createObjectNode();
+        jsonResponse.put("status", "success");
+        jsonResponse.put("message", message);
+        return jsonResponse;
     }
 }
