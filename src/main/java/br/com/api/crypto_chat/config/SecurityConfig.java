@@ -34,8 +34,7 @@ public class SecurityConfig extends WebSecurityConfiguration {
                 .requestMatchers(
                         "/api/v1/auth/verify-login",
                         "/api/v1/auth/register",
-                        "/api/v1/auth/login",
-                        "/call-chat")
+                        "/api/v1/auth/login")
                 .permitAll() // Permite o acesso sem autenticação para login e registro
                 .anyRequest().authenticated() // Requer autenticação para outras rotas
                 .and()

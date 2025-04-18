@@ -14,8 +14,8 @@ public interface PerfilInvestidorRepository extends JpaRepository<PerfilInvestid
     /**
      * Finds the most recent investor profile for a given user
      * 
-     * @param email The user's email
+     * @param login The user's login
      * @return Optional containing the most recent profile if exists
      */
-    Optional<PerfilInvestidor> findTopByEmailOrderByDataConclusaoDesc(String login);
+    Optional<PerfilInvestidor> findTopByLoginOrderByDataConclusaoDesc(String login);
 }

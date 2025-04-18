@@ -12,10 +12,10 @@ import br.com.api.crypto_chat.data.entity.Chat;
 public interface ChatRepository extends JpaRepository<Chat, UUID> {
 
     /**
-     * Find a chat by user email
+     * Find a chat by user login
      * 
-     * @param email The user's email
+     * @param login The user's login
      * @return Optional containing the chat if found
      */
-    Optional<Chat> findByEmail(String login);
+    Optional<Chat> findByLogin(String login);
 }

@@ -20,7 +20,7 @@ import lombok.Setter;
 
 @Entity
 @Table(name = "TB_LOG_MESSAGE", indexes = {
-        @Index(name = "idx_log_message_email", columnList = "email"),
+        @Index(name = "idx_log_message_login", columnList = "login"),
         @Index(name = "idx_log_message_date", columnList = "dateMessage")
 })
 @Getter
@@ -37,7 +37,7 @@ public class LogMessage {
     private UUID idLogMessage;
 
     @Column(nullable = false)
-    private String email;
+    private String login;
 
     @Lob
     @Column(nullable = false)

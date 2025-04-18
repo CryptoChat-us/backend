@@ -14,12 +14,12 @@ import br.com.api.crypto_chat.data.enums.UserRole;
 public interface UserRepository extends JpaRepository<User, UUID> {
 
     /**
-     * Find a user by their email
+     * Find a user by their login
      * 
-     * @param email The user's email
+     * @param login The user's login
      * @return Optional containing the user if found
      */
-    Optional<User> findByEmail(String email);
+    Optional<User> findByLogin(String email);
 
     /**
      * Find active users by their role
@@ -36,6 +36,6 @@ public interface UserRepository extends JpaRepository<User, UUID> {
      * @param email The email to check
      * @return true if a user exists with either the login or email
      */
-    boolean existsByEmail(String email);
+    boolean existsByLoginOrEmail(String login, String email);
 
 }

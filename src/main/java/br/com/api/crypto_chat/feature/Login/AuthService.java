@@ -24,11 +24,11 @@ public class AuthService {
     private final JwtUtils jwtService;
 
     protected boolean isLoginAvailable(String email) {
-        return !userRepository.existsByEmail(email);
+        return !userRepository.existsByLoginOrEmail(email, email);
     }
 
     public String authenticateUser(LoginRequest request) {
-        User user = userRepository.findByEmail(request.getEmail())
+        User user = userRepository.findByLogin(request.getLogin())
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
@@ -43,11 +43,12 @@ public class AuthService {
     }
 
     public String registerUser(RegisterRequest request) {
-        if (userRepository.existsByEmail(request.getEmail())) {
+        if (userRepository.existsByLoginOrEmail(request.getEmail(), request.getEmail())) {
             throw new IllegalArgumentException("User already exists with this login or email");
         }
 
         User newUser = User.builder()
+                .login(request.getEmail())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .role(UserRole.USER)
@@ -63,7 +64,7 @@ public class AuthService {
     }
 
     public void deleteUser(String email) {
-        User user = userRepository.findByEmail(email)
+        User user = userRepository.findByLogin(email)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
         userRepository.delete(user);
         log.info("User deleted: {}", email);

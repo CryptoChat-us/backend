@@ -58,7 +58,7 @@ public class AuthController {
                     .token(token)
                     .build());
         } catch (Exception e) {
-            log.error("Login failed for user: {}", request.getEmail(), e);
+            log.error("Login failed for user: {}", request.getLogin(), e);
             return ResponseEntity.badRequest().body(AuthResponse.error(MESSAGE_LOGIN_FAILED));
         }
     }

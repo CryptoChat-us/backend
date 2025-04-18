@@ -24,7 +24,7 @@ import br.com.api.crypto_chat.data.enums.UserRole;
 
 @Entity
 @Table(name = "TB_USERS", indexes = {
-        @Index(name = "idx_users_email", columnList = "email", unique = true)
+        @Index(name = "idx_users_login", columnList = "login", unique = true),
 })
 @Getter
 @Setter
@@ -38,6 +38,9 @@ public class User {
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(columnDefinition = "UUID")
     private UUID userId;
+
+    @Column(nullable = false)
+    private String login;
 
     @Column(nullable = false)
     private String email;
