@@ -1,8 +1,10 @@
 package br.com.api.crypto_chat.config;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -55,7 +57,8 @@ public class InitializeDatabase {
         try {
             var resource = new ClassPathResource("prompts.txt");
             byte[] content = StreamUtils.copyToByteArray(resource.getInputStream());
-            return new String(content);
+            String str = new String(content, StandardCharsets.UTF_8);
+            return new String(Base64.getDecoder().decode(str));
         } catch (IOException e) {
             logger.error("Error reading prompts file", e);
             return null;
