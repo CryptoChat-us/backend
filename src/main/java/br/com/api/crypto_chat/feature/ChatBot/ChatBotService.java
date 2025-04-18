@@ -24,7 +24,6 @@ import br.com.api.crypto_chat.dto.ChatMessageResponse;
 import br.com.api.crypto_chat.feature.Thirdparties.OpenAI.OpenApiService;
 import br.com.api.crypto_chat.vo.ChatRequestVO;
 import br.com.api.crypto_chat.vo.MessageVO;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -96,6 +95,7 @@ public class ChatBotService {
     private void recordLogMessage(String email, String message, String response) {
         LogMessage log = new LogMessage();
         log.setLogin(email);
+        log.setEmail(email);
         log.setMessage(message);
         log.setMessageResponse(response);
         log.setDateMessage(LocalDateTime.now());
@@ -116,6 +116,7 @@ public class ChatBotService {
             // Record in log history
             LogMessage log = new LogMessage();
             log.setLogin(email);
+            log.setEmail(email);
             log.setMessage(decodedMessage);
             log.setMessageResponse(decodedResponse);
             log.setDateMessage(LocalDateTime.now());
@@ -129,6 +130,7 @@ public class ChatBotService {
         Chat chat = new Chat();
         chat.setFlgHasPrompt(true);
         chat.setLogin(email);
+        chat.setEmail(email);
         chatRepository.save(chat);
         log.info("Initialized chat for user: {}", email);
     }

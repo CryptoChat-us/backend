@@ -32,4 +32,7 @@ public class Chat {
     @Column(unique = true, nullable = false)
     private String login;
 
+    @Column(unique = true, nullable = false)
+    private String email;
+
 }

@@ -39,6 +39,9 @@ public class LogMessage {
     @Column(nullable = false)
     private String login;
 
+    @Column(nullable = false)
+    private String email;
+
     @Lob
     @Column(nullable = false)
     private String message;
