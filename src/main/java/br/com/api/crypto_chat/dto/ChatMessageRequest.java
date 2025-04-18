@@ -5,9 +5,9 @@ import lombok.Data;
 
 @Data
 public class ChatMessageRequest {
-    
+
     @NotBlank(message = "Login is required")
-    private String login;
+    private String email;
 
     @NotBlank(message = "Message is required")
     private String message;

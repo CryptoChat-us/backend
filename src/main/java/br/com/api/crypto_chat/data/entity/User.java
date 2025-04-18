@@ -19,18 +19,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import br.com.api.crypto_chat.data.enums.LanguageLevel;
 import br.com.api.crypto_chat.data.enums.SubscriptionPlan;
 import br.com.api.crypto_chat.data.enums.UserRole;
 
 @Entity
-@Table(
-    name = "TB_USERS",
-    indexes = {
-        @Index(name = "idx_users_login", columnList = "login", unique = true),
+@Table(name = "TB_USERS", indexes = {
         @Index(name = "idx_users_email", columnList = "email", unique = true)
-    }
-)
+})
 @Getter
 @Setter
 @Builder
@@ -38,17 +33,11 @@ import br.com.api.crypto_chat.data.enums.UserRole;
 @AllArgsConstructor
 @EqualsAndHashCode(of = "userId")
 public class User {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(columnDefinition = "UUID")
     private UUID userId;
-
-    @Column(nullable = false, length = 100)
-    private String name;
-
-    @Column(nullable = false, length = 50)
-    private String login;
 
     @Column(nullable = false)
     private String email;
@@ -64,11 +53,8 @@ public class User {
     @Column(nullable = false)
     private SubscriptionPlan subscriptionPlan;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String language;
-
-    @Column(nullable = false)
-    private Long numClasses;
 
     @Column(nullable = false)
     private LocalDateTime registerDate;
@@ -78,9 +64,5 @@ public class User {
 
     @Column
     private LocalDateTime lastLoginDate;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private LanguageLevel languageLevel;
 
 }
