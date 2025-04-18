@@ -14,7 +14,7 @@ public class CorsConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins("http://localhost:3003")
+                        .allowedOrigins("http://localhost:3003", "https://www.cryptochat.us.com", "https://frontend2-weld-seven.vercel.app/", "https://frontend2-vinicius-projects-3cc36270.vercel.app/", "https://frontend2-git-main-vinicius-projects-3cc36270.vercel.app/")
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
                         .exposedHeaders("Authorization")
