@@ -38,16 +38,16 @@ public class InitializeDatabase {
 
     public void insertPrompts() {
         try {
-            List<Prompts> prompts = promptRepository.findAll();
-            if (prompts.isEmpty()) {
-                String promptsContent = getPrompts();
-                if (promptsContent != null) {
-                    JsonNode jsonValues = objectMapper.readTree(promptsContent);
-                    List<Prompts> listPrompts = formatToPrompts(jsonValues);
-                    insertPrompts(listPrompts);
-                    logger.info("Successfully initialized prompts database");
-                }
+            // List<Prompts> prompts = promptRepository.findAll();
+            // if (prompts.isEmpty()) {
+            String promptsContent = getPrompts();
+            if (promptsContent != null) {
+                // JsonNode jsonValues = objectMapper.readTree(promptsContent);
+                // List<Prompts> listPrompts = formatToPrompts(jsonValues);
+                // insertPrompts(listPrompts);
+                logger.info("Successfully initialized prompts database");
             }
+            // }
         } catch (Exception e) {
             logger.error("Error initializing prompts database", e);
         }
@@ -68,18 +68,18 @@ public class InitializeDatabase {
     private List<Prompts> formatToPrompts(JsonNode jsonValues) {
         List<Prompts> list = new ArrayList<>();
         for (JsonNode node : jsonValues.get("prompts")) {
-            Prompts prompt = new Prompts();
-            prompt.setMessage(node.get("user").asText());
-            prompt.setMessageResponse(node.get("assistant").asText());
-            prompt.setDateMessage(LocalDateTime.now());
-            list.add(prompt);
+            // Prompts prompt = new Prompts();
+            // prompt.setMessage(node.get("user").asText());
+            // prompt.setMessageResponse(node.get("assistant").asText());
+            // prompt.setDateMessage(LocalDateTime.now());
+            // list.add(prompt);
         }
         return list;
     }
 
     private void insertPrompts(List<Prompts> listPrompts) {
         for (Prompts prompt : listPrompts) {
-            promptRepository.save(prompt);
+            // promptRepository.save(prompt);
         }
     }
 }
