@@ -109,8 +109,8 @@ public class ChatBotService {
         List<MessageVO> messages = new ArrayList<>();
 
         promptRepository.findAll().forEach(prompt -> {
-            String decodedMessage = decodeBase64(prompt.getMessage());
-            String decodedResponse = decodeBase64(prompt.getMessageResponse());
+            String decodedMessage = prompt.getMessage();
+            String decodedResponse = prompt.getMessageResponse();
 
             messages.add(createMessage("user", decodedMessage));
             messages.add(createMessage("assistant", decodedResponse));

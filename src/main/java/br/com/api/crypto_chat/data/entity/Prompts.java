@@ -25,6 +25,7 @@ public class Prompts {
 
     @Lob
     @Column(columnDefinition = "TEXT")
+    @Basic(fetch = FetchType.EAGER)
     private String message;
 
     @Lob
