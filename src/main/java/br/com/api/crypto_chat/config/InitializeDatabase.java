@@ -36,7 +36,7 @@ public class InitializeDatabase {
         insertPrompts();
     }
 
-    private void insertPrompts() {
+    public void insertPrompts() {
         try {
             List<Prompts> prompts = promptRepository.findAll();
             if (prompts.isEmpty()) {
@@ -53,7 +53,7 @@ public class InitializeDatabase {
         }
     }
 
-    private String getPrompts() {
+    public String getPrompts() {
         try {
             var resource = new ClassPathResource("prompts.txt");
             byte[] content = StreamUtils.copyToByteArray(resource.getInputStream());

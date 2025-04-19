@@ -11,12 +11,15 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import br.com.api.crypto_chat.config.InitializeDatabase;
 import br.com.api.crypto_chat.config.JwtUtils;
 import br.com.api.crypto_chat.data.entity.Chat;
 import br.com.api.crypto_chat.data.entity.LogMessage;
+import br.com.api.crypto_chat.data.entity.Prompts;
 import br.com.api.crypto_chat.data.repository.ChatRepository;
 import br.com.api.crypto_chat.data.repository.LogMessageRepository;
 import br.com.api.crypto_chat.data.repository.PromptRepository;
@@ -38,7 +41,7 @@ public class ChatBotService {
     private final OpenApiService openApiService;
     private final ChatRepository chatRepository;
     private final PromptRepository promptRepository;
-    private final JwtUtils utils;
+    private final InitializeDatabase database;
 
     private static final String GPT_MODEL = "gpt-4-turbo-preview";
 
@@ -60,16 +63,15 @@ public class ChatBotService {
         return generateJsonResponse(response);
     }
 
-    private String processChat(ChatMessageRequest request) {
+    private String processChat(ChatMessageRequest request) throws JsonMappingException, JsonProcessingException {
         // Prepare and send request
         List<MessageVO> messages = new ArrayList<>();
+        ObjectMapper objectMapper = new ObjectMapper();
 
         // Get chat history or initialize with prompts
-        Optional<Chat> chat = chatRepository.findByLogin(request.getEmail());
-        if (chat.isEmpty() || !chat.get().getFlgHasPrompt()) {
-            messages.addAll(loadPrimaryPrompts(request.getEmail()));
-            initializeChat(request.getEmail());
-        }
+        String prompts = database.getPrompts();
+        JsonNode jsonValues = objectMapper.readTree(prompts);
+        messages.addAll(loadPrompts(request.getEmail(), jsonValues));
 
         // Add chat history
         logMessageRepository.findAllByLoginOrderByDateMessageAsc(request.getEmail())
@@ -103,6 +105,15 @@ public class ChatBotService {
         log.setDateMessage(LocalDateTime.now());
 
         logMessageRepository.save(log);
+    }
+
+    private List<MessageVO> loadPrompts(String email, JsonNode nodevalues) {
+        List<MessageVO> messages = new ArrayList<>();
+        for (JsonNode node : nodevalues.get("prompts")) {
+            messages.add(createMessage("user", node.get("user").asText()));
+            messages.add(createMessage("assistant", node.get("assistant").asText()));
+        }
+        return messages;
     }
 
     private List<MessageVO> loadPrimaryPrompts(String email) {
